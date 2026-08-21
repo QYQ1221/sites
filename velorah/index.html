@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1440" />
+  <title>Vespera® — 梦想在寂静中升起</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background: 201 100% 13%;
+      --foreground: 0 0% 100%;
+      --muted-foreground: 240 4% 66%;
+      --border: 0 0% 18%;
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 0; }
+    /* 各板块跳转落点：Journal/About/Studio 保持让位；Reach Us 调整到 eyebrow 紧贴导航下方并避开页脚；About 加大底部间距避免漏出 Journal；Subscribe 独立锚点跳到订阅表单区 */
+    #about { scroll-margin-top: 116px; padding-bottom: 200px; }
+    #studio { scroll-margin-top: 56px; }
+    #reach { scroll-margin-top: 160px; padding-bottom: 220px; }
+    #subscribe { scroll-margin-top: 80px; }
+
+    body {
+      font-family: var(--font-body);
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .display { font-family: var(--font-display); font-weight: 400; }
+    .muted { color: hsl(var(--muted-foreground)); }
+
+    /* ===== Fixed video background ===== */
+    .video-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(to bottom, rgba(2,12,22,0.9) 0%, rgba(2,12,22,0.25) 22%, rgba(2,12,22,0.25) 70%, rgba(2,12,22,0.92) 100%),
+        radial-gradient(120% 80% at 50% 50%, rgba(2,12,22,0.15) 0%, rgba(2,12,22,0.55) 100%);
+    }
+
+    .page { position: relative; z-index: 2; }
+
+    /* ===== Liquid glass ===== */
+    .liquid-glass {
+      background: rgba(255,255,255,0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+        rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes fade-rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-rise { animation: fade-rise 0.8s ease-out both; }
+    .animate-fade-rise-delay { animation: fade-rise 0.8s ease-out 0.2s both; }
+    .animate-fade-rise-delay-2 { animation: fade-rise 0.8s ease-out 0.4s both; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease-out, transform .8s ease-out; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal.d1 { transition-delay: .12s; }
+    .reveal.d2 { transition-delay: .24s; }
+    .reveal.d3 { transition-delay: .36s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal, .animate-fade-rise, .animate-fade-rise-delay, .animate-fade-rise-delay-2 { animation: none; opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+      transition: background .35s ease, backdrop-filter .35s ease, border-color .35s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .navbar.scrolled {
+      background: rgba(0,0,0,0.30);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-inner { max-width: 80rem; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 24px 32px; }
+    .logo { font-family: var(--font-display); font-size: 30px; letter-spacing: -0.02em; color: hsl(var(--foreground)); }
+    .logo sup { font-size: 12px; }
+    .nav-links { display: flex; gap: 36px; align-items: center; }
+    .nav-links a {
+      font-size: 14px; color: hsl(var(--muted-foreground)); text-decoration: none;
+      transition: color .25s ease;
+    }
+    .nav-links a:hover, .nav-links a.active { color: hsl(var(--foreground)); }
+    .nav-cta {
+      border-radius: 9999px; padding: 10px 24px; font-size: 14px; color: hsl(var(--foreground));
+      cursor: pointer; transition: transform .25s ease; background: rgba(255,255,255,0.02);
+    }
+    .nav-cta:hover { transform: scale(1.03); }
+
+    /* ===== Layout ===== */
+    .section { max-width: 80rem; margin: 0 auto; padding: 0 32px; }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 128px 24px 160px; }
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 6rem); line-height: 0.95; letter-spacing: -2.46px;
+      max-width: 80rem;
+    }
+    .hero h1 em { font-style: normal; color: hsl(var(--muted-foreground)); }
+    .hero p { color: hsl(var(--muted-foreground)); font-size: clamp(1rem, 1.4vw, 1.125rem); max-width: 42rem; margin-top: 32px; line-height: 1.7; }
+    .btn-lg {
+      border-radius: 9999px; padding: 20px 56px; font-size: 16px; color: hsl(var(--foreground));
+      cursor: pointer; transition: transform .25s ease; margin-top: 48px; background: rgba(255,255,255,0.02);
+    }
+    .btn-lg:hover { transform: scale(1.03); }
+
+    .block { padding: 120px 0; }
+    .eyebrow { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: hsl(var(--muted-foreground)); margin-bottom: 20px; }
+    .block h2 { font-size: clamp(2.25rem, 4vw, 3.5rem); line-height: 1.05; letter-spacing: -1px; max-width: 52rem; }
+    .block .lead { color: hsl(var(--muted-foreground)); font-size: 1.05rem; max-width: 46rem; margin-top: 24px; line-height: 1.75; }
+
+    /* Cards */
+    .grid { display: grid; gap: 24px; margin-top: 56px; }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .card {
+      border-radius: 20px; padding: 32px; background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08); transition: transform .3s ease, background .3s ease;
+    }
+    .card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.045); }
+    .card .num { font-family: var(--font-display); font-size: 28px; color: hsl(var(--muted-foreground)); }
+    .card h3 { font-size: 24px; margin: 14px 0 12px; }
+    .card p { color: hsl(var(--muted-foreground)); font-size: 14.5px; line-height: 1.7; }
+
+    .jcard { border-radius: 20px; overflow: hidden; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); transition: transform .3s ease; }
+    .jcard:hover { transform: translateY(-6px); }
+    .jcard .thumb { height: 180px; }
+    .jcard .body { padding: 24px; }
+    .jcard .tag { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+    .jcard h3 { font-size: 22px; margin: 12px 0 10px; line-height: 1.2; }
+    .jcard p { color: hsl(var(--muted-foreground)); font-size: 14px; line-height: 1.65; }
+    .jcard .read { display: inline-block; margin-top: 18px; font-size: 13px; color: hsl(var(--foreground)); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 2px; }
+
+    /* Reach us form */
+    .form-wrap { max-width: 40rem; }
+    .field { display: flex; gap: 14px; margin-top: 36px; }
+    .field input {
+      flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 9999px; padding: 18px 28px; color: hsl(var(--foreground)); font-size: 15px; font-family: var(--font-body);
+      outline: none; transition: border-color .25s ease;
+    }
+    .field input::placeholder { color: hsl(var(--muted-foreground)); }
+    .field input:focus { border-color: rgba(255,255,255,0.4); }
+    .thanks { display: none; margin-top: 28px; color: hsl(var(--foreground)); font-family: var(--font-display); font-size: 28px; }
+
+    /* Footer */
+    .footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 72px 0 56px; margin-top: 40px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    .footer h4 { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: hsl(var(--muted-foreground)); margin-bottom: 18px; font-family: var(--font-body); }
+    .footer a { display: block; color: hsl(var(--muted-foreground)); text-decoration: none; font-size: 14px; margin-bottom: 12px; transition: color .2s ease; }
+    .footer a:hover { color: hsl(var(--foreground)); }
+    .footer .copy { margin-top: 56px; color: hsl(var(--muted-foreground)); font-size: 13px; }
+
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed fullscreen looping background video -->
+  <video class="video-bg" autoplay loop muted playsinline
+    src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4"></video>
+  <div class="scrim"></div>
+
+  <div class="page">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="nav-inner">
+        <a href="#home" class="logo">Vespera<sup>®</sup></a>
+        <div class="nav-links">
+          <a href="#home" class="active">首页</a>
+          <a href="#studio">工作室</a>
+          <a href="#about">关于</a>
+          <a href="#journal">期刊</a>
+          <a href="#reach">联系我们</a>
+          <a href="#footer" class="nav-cta liquid-glass">探索</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" id="home">
+      <h1 class="animate-fade-rise">在<em>寂静</em>中，让<em>梦想</em>升起</h1>
+      <p class="animate-fade-rise-delay">我们为深度思考者、大胆的创造者和安静的叛逆者打造工具——在噪哗之中，构建让人专注、让灵感生长的数字空间</p>
+      <button class="btn-lg liquid-glass animate-fade-rise-delay-2" onclick="document.getElementById('reach').scrollIntoView()">开始旅程</button>
+    </header>
+
+    <!-- Studio -->
+    <section class="block section" id="studio">
+      <div class="reveal">
+        <div class="eyebrow">工作室</div>
+        <h2>我们打造什么</h2>
+        <p class="lead">四大方向，一个执念：像清水一样通透的界面</p>
+      </div>
+      <div class="grid grid-4">
+        <div class="card reveal d1">
+          <div class="num">01</div>
+          <h3>专注工具</h3>
+          <p>去除干扰的写作与思考环境，围绕节奏与寂静而建</p>
+        </div>
+        <div class="card reveal d2">
+          <div class="num">02</div>
+          <h3>品牌世界</h3>
+          <p>为那些“宁被感知、不愿嘲哗”的工作室打造的电影感品牌形象</p>
+        </div>
+        <div class="card reveal d3">
+          <div class="num">03</div>
+          <h3>界面系统</h3>
+          <p>让产品在任何规模下都保持安静的组件库与设计令牌</p>
+        </div>
+        <div class="card reveal">
+          <div class="num">04</div>
+          <h3>动效</h3>
+          <p>克制而有意义的动效，只引导，不打扰</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About / Manifesto -->
+    <section class="block section" id="about">
+      <div class="reveal">
+        <div class="eyebrow">宣言</div>
+        <h2>我们相信，最好的工作发生在 <span class="muted">安静的时刻</span> ——当噪音退去</h2>
+        <p class="lead">Vespera 是一家为尊重您注意力的工具而生的工作室。没有杂乱、没有催促、没有无尽的信息流，只有一片平静的表面——让专注回归，让想法得以呼吸。我们为那些在世界安静下来时进行最深思考的人而设计。</p>
+      </div>
+    </section>
+
+    <!-- Journal -->
+    <section class="block section" id="journal">
+      <div class="reveal">
+        <div class="eyebrow">期刊</div>
+        <h2>来自工作室的笔记</h2>
+        <p class="lead">关于专注、手艺，以及安静地把事情做好的随笔</p>
+      </div>
+      <div class="grid grid-3">
+        <article class="jcard reveal d1">
+          <div class="thumb" style="background:linear-gradient(135deg,#0b3a5e,#0a1c2e)"></div>
+          <div class="body">
+            <div class="tag">随笔</div>
+            <h3>On the Discipline of Doing Less</h3>
+            <p>为什么最高效的团队，会像保护路线图一样保护留白</p>
+            <a href="#journal" class="read">阅读 →</a>
+          </div>
+        </article>
+        <article class="jcard reveal d2">
+          <div class="thumb" style="background:linear-gradient(135deg,#123e63,#0c2034)"></div>
+          <div class="body">
+            <div class="tag">手艺</div>
+            <h3>Designing for the Quiet Hours</h3>
+            <p>一份关于“退后”的界面指南——让界面退后，让工作和人走上前来</p>
+            <a href="#journal" class="read">阅读 →</a>
+          </div>
+        </article>
+        <article class="jcard reveal d3">
+          <div class="thumb" style="background:linear-gradient(135deg,#0d3c5f,#0a1828)"></div>
+          <div class="body">
+            <div class="tag">工作室</div>
+            <h3>What We Learned Shipping in Silence</h3>
+            <p>一年里不看通知、不看仪表盘、不为表现而焦虑的构建笔记</p>
+            <a href="#journal" class="read">阅读 →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Reach Us -->
+    <section class="block section" id="reach">
+      <div class="reveal form-wrap" id="subscribe">
+        <div class="eyebrow">联系我们</div>
+        <h2>开始您的旅程</h2>
+        <p class="lead">告诉我们把第一章寄到哪里。没有噪音，只有作品。</p>
+        <form class="field" id="reachForm" onsubmit="return submitReach(event)">
+          <input type="email" id="reachEmail" placeholder="you@studio.com" required />
+          <button type="submit" class="nav-cta liquid-glass">开始旅程</button>
+        </form>
+        <div class="thanks" id="reachThanks">谢谢，我们会尽快与您联系。 ✦</div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer section" id="footer">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="font-size:30px">Vespera<sup style="font-size:12px">®</sup></div>
+          <p class="muted" style="margin-top:16px;max-width:24rem;line-height:1.7;font-size:14px">为深度思考者、大胆创造者与安静叛逆者打造的工具</p>
+        </div>
+        <div>
+          <h4>导航</h4>
+          <a href="#home">首页</a>
+          <a href="#studio">工作室</a>
+          <a href="#about">关于</a>
+          <a href="#journal">期刊</a>
+        </div>
+        <div>
+          <h4>联系</h4>
+          <a href="#reach">联系我们</a>
+          <a href="#subscribe">期刊订阅</a>
+          <a href="#studio">与我们合作</a>
+        </div>
+      </div>
+      <div class="copy">© 2026 Vespera Studio. 版权所有</div>
+    </footer>
+  </div>
+
+  <script>
+    // Navbar scrim on scroll
+    var navbar = document.getElementById('navbar');
+    function onScroll() {
+      if (window.scrollY > 24) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Scroll-spy active nav
+    var sections = ['home','studio','about','journal','reach'];
+    var navLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+    var spy = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          var id = e.target.id;
+          navLinks.forEach(function(a) {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id && a.classList.contains('active') === false ? true : a.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sections.forEach(function(id) { var el = document.getElementById(id); if (el) spy.observe(el); });
+
+    // Reveal on scroll
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+
+    // Reach form (front-end only)
+    function submitReach(e) {
+      e.preventDefault();
+      var email = document.getElementById('reachEmail').value;
+      if (!email) return false;
+      document.getElementById('reachForm').style.display = 'none';
+      document.getElementById('reachThanks').style.display = 'block';
+      return false;
+    }
+  </script>
+</body>
+</html>
