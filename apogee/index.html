@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Kairos — 为未知问题而生的高级推理系统与预测模型。把原始信号变成预见。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Kairos — 为未知问题而生的推理系统" />
+    <meta property="og:description" content="为未知而生的高级推理系统与预测模型. Turn raw signal into foresight." />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23080A19'/%3E%3Cpath d='M32 32L22.25 32C18.8 32 16 29.2 16 25.75L16 32L0 32L0 24C0 19.58 3.58 16 8 16C12.42 16 16 19.58 16 24L16 16L32 16Z' fill='white'/%3E%3C/svg%3E" />
+    <title>Kairos — 为未知问题而生的推理系统</title>
+    <link
+      href="https://db.onlinewebfonts.com/c/13ab13418f633c1b0516fed6e30bedbc?family=Suisse+Int%27l"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {}
+        }
+      }
+    </script>
+    <style>
+      * {margin: 0; padding: 0; box-sizing: border-box;}
+      body {
+        font-family: 'Suisse Intl', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      html { scroll-behavior: smooth; }
+      /* 跳转锚点时给内容板块留出顶部空间，避免标题贴边（自然流式，不强制满屏/居中） */
+      section[id] { scroll-margin-top: 60px; margin-top: 60px; }
+      section#pricing { scroll-margin-top: 50px; }
+      
+      @keyframes fade-up {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fade-down {
+        from { opacity: 0; transform: translateY(-16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fade-left {
+        from { opacity: 0; transform: translateX(-20px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes fade-right {
+        from { opacity: 0; transform: translateX(20px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes fade-scale {
+        from { opacity: 0; transform: scale(0.92); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+      @keyframes bar-grow {
+        from { transform: scaleY(0); opacity: 0; }
+        to   { transform: scaleY(1); opacity: 1; }
+      }
+      .animate-fade-up    { animation: fade-up    0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-fade-down  { animation: fade-down  0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-fade-left  { animation: fade-left  0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-fade-right { animation: fade-right 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-fade-scale { animation: fade-scale 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-bar-grow {
+        animation: bar-grow 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      }
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ===== 全站固定视频背景（滚动时上下始终可见）+ 压暗层 ===== */
+      .site-video-bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -3;
+      }
+      .site-scrim {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background: rgba(8, 10, 25, 0.2);
+        pointer-events: none;
+      }
+      /* ===== 全局动态背景（光斑 + 粒子 + 流光带，固定在整页底层，透明叠加在视频上） ===== */
+      .site-nav {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+      .nav-link.nav-active {
+        color: #fff;
+        filter: drop-shadow(0 0 10px rgba(140, 170, 255, 0.6));
+      }
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(76, 110, 245, 0.10), transparent 60%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(14, 165, 233, 0.10), transparent 55%);
+  pointer-events: none;
+}
+      .hero-glow {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(80px);
+        will-change: transform;
+      }
+      .hero-glow-1 {
+        width: 720px; height: 720px; left: -180px; top: -160px;
+        background: radial-gradient(circle, rgba(76, 110, 245, 0.45), transparent 62%);
+        animation: hero-drift-1 22s ease-in-out infinite alternate;
+      }
+      .hero-glow-2 {
+        width: 860px; height: 860px; right: -240px; top: 22%;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.38), transparent 62%);
+        animation: hero-drift-2 30s ease-in-out infinite alternate;
+      }
+      .hero-glow-3 {
+        width: 680px; height: 680px; left: 32%; bottom: -220px;
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.32), transparent 62%);
+        animation: hero-drift-3 34s ease-in-out infinite alternate;
+      }
+      @keyframes hero-drift-1 {
+        from { transform: translate(0, 0) scale(1); }
+        to   { transform: translate(120px, 90px) scale(1.22); }
+      }
+      @keyframes hero-drift-2 {
+        from { transform: translate(0, 0) scale(1); }
+        to   { transform: translate(-140px, -90px) scale(1.28); }
+      }
+      @keyframes hero-drift-3 {
+        from { transform: translate(0, 0) scale(1); }
+        to   { transform: translate(90px, -120px) scale(1.18); }
+      }
+      .hero-particles { position: absolute; inset: 0; }
+      .hero-particles span {
+        position: absolute;
+        bottom: -14px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.75);
+        box-shadow: 0 0 14px 3px rgba(120, 160, 255, 0.55);
+        animation: hero-rise linear infinite;
+      }
+      @keyframes hero-rise {
+        0%   { transform: translateY(0); opacity: 0; }
+        8%   { opacity: 0.95; }
+        85%  { opacity: 0.45; }
+        100% { transform: translateY(-112vh); opacity: 0; }
+      }
+      /* 流动光带 */
+      .page-ribbon {
+        position: absolute;
+        width: 140%;
+        height: 280px;
+        left: -20%;
+        top: 55%;
+        background: linear-gradient(90deg, transparent, rgba(76, 110, 245, 0.10), rgba(139, 92, 246, 0.14), rgba(14, 165, 233, 0.10), transparent);
+        filter: blur(40px);
+        transform: rotate(-8deg);
+        animation: ribbon-drift 28s ease-in-out infinite alternate;
+        opacity: 0.9;
+      }
+      @keyframes ribbon-drift {
+        from { transform: rotate(-8deg) translateX(-6%); }
+        to   { transform: rotate(-5deg) translateX(6%); }
+      }
+    </style>
+  </head>
+  <body>
+    <video class="site-video-bg" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260813_092641_de52eb87-daf2-41db-92cb-7a56eae012a5.mp4" autoplay loop muted playsinline></video>
+    <div class="site-scrim" aria-hidden="true"></div>
+    <div class="page-bg" aria-hidden="true">
+      <div class="hero-glow hero-glow-1"></div>
+      <div class="hero-glow hero-glow-2"></div>
+      <div class="hero-glow hero-glow-3"></div>
+      <div class="page-ribbon"></div>
+      <div class="hero-particles">
+        <span style="left:6%;  animation-delay:0s;   animation-duration:16s"></span>
+        <span style="left:14%; animation-delay:3s;   animation-duration:21s"></span>
+        <span style="left:23%; animation-delay:1s;   animation-duration:18s"></span>
+        <span style="left:31%; animation-delay:5s;   animation-duration:24s"></span>
+        <span style="left:40%; animation-delay:2s;   animation-duration:17s"></span>
+        <span style="left:49%; animation-delay:7s;   animation-duration:22s"></span>
+        <span style="left:57%; animation-delay:4s;   animation-duration:19s"></span>
+        <span style="left:66%; animation-delay:0.5s; animation-duration:25s"></span>
+        <span style="left:74%; animation-delay:6s;   animation-duration:16s"></span>
+        <span style="left:82%; animation-delay:2.5s; animation-duration:23s"></span>
+        <span style="left:90%; animation-delay:8s;   animation-duration:18s"></span>
+        <span style="left:96%; animation-delay:4.5s; animation-duration:26s"></span>
+      </div>
+    </div>
+    <section id="home" class="relative w-full h-screen overflow-hidden">
+      <div class="relative z-10 h-full flex flex-col">
+        <nav class="site-nav fixed top-0 left-0 right-0 z-50 w-full max-w-[1800px] mx-auto px-5 sm:px-8 md:px-[82px] pt-[20px] sm:pt-[30px] pb-[12px] sm:pb-[16px] flex items-center justify-between">
+          <div class="opacity-0 animate-fade-down flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+            <svg width="28" height="28" viewBox="0 0 256 256" fill="none" class="sm:w-[32px] sm:h-[32px]">
+              <path d="M 256 256 L 178 256 C 150.386 256 128 233.614 128 206 L 128 256 L 0 256 L 0 192 C 0 156.654 28.654 128 64 128 C 99.346 128 128 156.654 128 192 L 128 128 L 256 128 Z M 78 0 C 105.614 0 128 22.386 128 50 L 128 0 L 256 0 L 256 64 C 256 99.346 227.346 128 192 128 C 156.654 128 128 99.346 128 64 L 128 128 L 0 128 L 0 0 Z" fill="white"/>
+            </svg>
+            <span class="text-white text-[22px] sm:text-[26px] font-[450] leading-none tracking-[-0.02em]">Kairos</span>
+          </div>
+          
+          <div class="opacity-0 animate-fade-down hidden lg:block" style="animation-delay:100ms">
+            <div class="h-[52px] px-6 flex items-center gap-[22px] bg-white/[0.07] border border-white/10 rounded-full backdrop-blur-[16px]">
+              <span class="nav-link cursor-pointer text-white/80 text-[14px] font-[450] leading-[14px] hover:text-white hover:drop-shadow-[0_0_10px_rgba(140,170,255,0.45)] transition-all duration-300" data-target="home" onclick="go('home')">首页</span>
+              <span class="nav-link cursor-pointer text-white/80 text-[14px] font-[450] leading-[14px] hover:text-white hover:drop-shadow-[0_0_10px_rgba(140,170,255,0.45)] transition-all duration-300" data-target="platform" onclick="go('platform')">平台</span>
+              <span class="nav-link cursor-pointer text-white/80 text-[14px] font-[450] leading-[14px] hover:text-white hover:drop-shadow-[0_0_10px_rgba(140,170,255,0.45)] transition-all duration-300" data-target="pricing" onclick="go('pricing')">定价</span>
+              <span class="nav-link cursor-pointer text-white/80 text-[14px] font-[450] leading-[14px] hover:text-white hover:drop-shadow-[0_0_10px_rgba(140,170,255,0.45)] transition-all duration-300" data-target="resources" onclick="go('resources')">资源</span>
+              <span class="nav-link cursor-pointer text-white/80 text-[14px] font-[450] leading-[14px] hover:text-white hover:drop-shadow-[0_0_10px_rgba(140,170,255,0.45)] transition-all duration-300" data-target="blog" onclick="go('blog')">洞察</span>
+              <span class="nav-link cursor-pointer text-white/80 text-[14px] font-[450] leading-[14px] hover:text-white hover:drop-shadow-[0_0_10px_rgba(140,170,255,0.45)] transition-all duration-300" data-target="about" onclick="go('about')">关于</span>
+              <span class="nav-link cursor-pointer text-white/80 text-[14px] font-[450] leading-[14px] hover:text-white hover:drop-shadow-[0_0_10px_rgba(140,170,255,0.45)] transition-all duration-300" data-target="contact" onclick="go('contact')">联系</span>
+            </div>
+          </div>
+          
+          <div class="opacity-0 animate-fade-down hidden lg:block" style="animation-delay:200ms">
+            <div class="h-[52px] p-[3px] bg-white/[0.07] border border-white/10 rounded-full backdrop-blur-[16px] flex items-center gap-[5px]">
+              <button class="h-[46px] px-6 rounded-full text-white text-[14px] font-[450] leading-[14px] hover:bg-white/10 transition-colors">登录</button>
+              <button class="h-[46px] px-6 bg-[#E9E9E9] rounded-full text-[#0A0707] text-[14px] font-[450] leading-[14px] hover:bg-white transition-colors">预约演示</button>
+            </div>
+          </div>
+          
+          <div class="opacity-0 animate-fade-down lg:hidden" style="animation-delay:100ms">
+            <button class="w-[44px] h-[44px] flex items-center justify-center rounded-full bg-white/[0.07] border border-white/10 backdrop-blur-[16px] transition-colors hover:bg-white/15" onclick="toggleMenu()" aria-label="Toggle menu">
+              <div class="relative w-5 h-5">
+                <svg id="menu-icon" class="w-5 h-5 text-white absolute inset-0 transition-all duration-300 ease-out opacity-100 rotate-0 scale-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="12" x2="21" y2="12"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+                <svg id="close-icon" class="w-5 h-5 text-white absolute inset-0 transition-all duration-300 ease-out opacity-0 -rotate-90 scale-75" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+        </nav>
+        
+        <div id="hero-body" class="page-fade flex-1 flex items-center py-8">
+          <div class="w-full max-w-[1800px] mx-auto px-5 sm:px-8 md:px-[82px] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10 lg:gap-12">
+            <div class="max-w-[593px]">
+              <div class="opacity-0 animate-fade-up" style="animation-delay:300ms">
+                <h1 class="text-white text-[36px] sm:text-[52px] md:text-[64px] lg:text-[72px] font-normal leading-[0.95] mb-5 sm:mb-8">
+                  让关键数据抵达决定性时刻
+                </h1>
+              </div>
+              <div class="opacity-0 animate-fade-up" style="animation-delay:500ms">
+                <p class="text-white/80 text-[16px] sm:text-[18px] md:text-[20px] font-[450] leading-[1.3] max-w-[370px] mb-7 sm:mb-10">
+                  为未知而生的高级推理系统与预测模型
+                </p>
+              </div>
+              <div class="opacity-0 animate-fade-up" style="animation-delay:700ms">
+                <div class="flex flex-wrap gap-3 sm:gap-4">
+                  <button class="h-[46px] sm:h-[51px] px-5 sm:px-[27px] bg-[#E9E9E9] rounded-[12px] text-[#0A0707] text-[14px] sm:text-[15.5px] font-[450] leading-[15.5px] transition-all duration-300 hover:opacity-90 hover:-translate-y-0.5">
+                    预约演示
+                  </button>
+                  <button class="h-[46px] sm:h-[51px] px-5 sm:px-[27px] rounded-[12px] border border-white text-white text-[14px] sm:text-[15.5px] font-[450] leading-[15.5px] transition-all duration-300 hover:opacity-80 hover:-translate-y-0.5">
+                    联系团队
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="opacity-0 animate-fade-scale" style="animation-delay:900ms">
+              <div class="w-full rounded-[24px] sm:rounded-[33px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] p-5 sm:p-8 pb-5 sm:pb-6">
+                <p class="text-white text-[16px] sm:text-[20px] font-[450] leading-[20px] mb-3 sm:mb-4">营收增长</p>
+                <p class="mb-2 sm:mb-3">
+                  <span class="text-white text-[28px] sm:text-[46px] font-[450] leading-[1]">$14,205,890</span>
+                  <span class="text-white/20 text-[28px] sm:text-[46px] font-[450] leading-[1]">.00</span>
+                </p>
+                <div class="flex items-center gap-[10px] mb-6 sm:mb-8">
+                  <span class="px-[6px] py-[7px] bg-white/20 rounded-[6px] text-white text-[12px] sm:text-[14px] font-[450] leading-[14px]">+32.4%</span>
+                  <span class="text-white/80 text-[12px] sm:text-[14px] font-[450] leading-[14px] opacity-70">较上一周期（¥1,070 万）</span>
+                </div>
+                <div class="relative">
+                  <div class="flex items-end gap-[1.5px] h-[80px] sm:h-[100px]" id="chart-bars"></div>
+                  <div class="absolute inset-0 pointer-events-none"></div>
+                  <div class="flex justify-between mt-3" id="chart-labels"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="mobile-menu" class="lg:hidden fixed inset-0 z-40 invisible transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
+        <div class="absolute inset-0 bg-[#080A19]/90 backdrop-blur-[24px] transition-opacity duration-500" onclick="toggleMenu()"></div>
+        <div class="absolute top-[84px] sm:top-[100px] left-4 right-4 sm:left-6 sm:right-6 bg-white/[0.06] backdrop-blur-[30px] rounded-[20px] border border-white/10 p-6 sm:p-8 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] origin-top opacity-0 -translate-y-4 scale-[0.97]" id="menu-panel">
+          <div class="flex flex-col gap-1">
+            <a href="#home" class="flex items-center justify-between px-4 py-4 rounded-[12px] text-white/90 text-[18px] font-[450] hover:bg-white/[0.06] transition-all duration-300 opacity-0 -translate-x-3" onclick="toggleMenu(); go('home'); return false;">首页</a>
+            <a href="#platform" class="flex items-center justify-between px-4 py-4 rounded-[12px] text-white/90 text-[18px] font-[450] hover:bg-white/[0.06] transition-all duration-300 opacity-0 -translate-x-3" onclick="toggleMenu(); go('platform'); return false;">平台</a>
+            <a href="#pricing" class="flex items-center justify-between px-4 py-4 rounded-[12px] text-white/90 text-[18px] font-[450] hover:bg-white/[0.06] transition-all duration-300 opacity-0 -translate-x-3" onclick="toggleMenu(); go('pricing'); return false;">定价</a>
+            <a href="#resources" class="flex items-center justify-between px-4 py-4 rounded-[12px] text-white/90 text-[18px] font-[450] hover:bg-white/[0.06] transition-all duration-300 opacity-0 -translate-x-3" onclick="toggleMenu(); go('resources'); return false;">资源</a>
+            <a href="#blog" class="flex items-center justify-between px-4 py-4 rounded-[12px] text-white/90 text-[18px] font-[450] hover:bg-white/[0.06] transition-all duration-300 opacity-0 -translate-x-3" onclick="toggleMenu(); go('blog'); return false;">洞察</a>
+            <a href="#about" class="flex items-center justify-between px-4 py-4 rounded-[12px] text-white/90 text-[18px] font-[450] hover:bg-white/[0.06] transition-all duration-300 opacity-0 -translate-x-3" onclick="toggleMenu(); go('about'); return false;">关于</a>
+            <a href="#contact" class="flex items-center justify-between px-4 py-4 rounded-[12px] text-white/90 text-[18px] font-[450] hover:bg-white/[0.06] transition-all duration-300 opacity-0 -translate-x-3" onclick="toggleMenu(); go('contact'); return false;">联系</a>
+          </div>
+          <div class="h-px bg-white/10 my-5"></div>
+          <div class="flex flex-col gap-3 opacity-0 translate-y-2 transition-all duration-300" id="menu-ctas">
+            <button class="w-full h-[50px] bg-[#E9E9E9] rounded-[12px] text-[#0A0707] text-[15px] font-[450] transition-colors hover:bg-white">预约演示</button>
+            <button class="w-full h-[50px] rounded-[12px] border border-white/30 text-white text-[15px] font-[450] transition-colors hover:bg-white/5">登录</button>
+          </div>
+        </div>
+      </div>
+          </section>
+    
+    <section id="platform" class="relative w-full px-5 sm:px-8 md:px-[82px] py-10 sm:py-14">
+      <div class="page-fade w-full max-w-[1800px] mx-auto">
+        <div class="reveal">
+          <div class="text-white/50 text-[13px] sm:text-[14px] font-[450] tracking-[0.2em] uppercase mb-6 sm:mb-8">平台</div>
+          <h2 class="text-white text-[28px] sm:text-[44px] font-normal leading-[1.1] max-w-[820px]">
+            为在黑暗中做决策的团队，提供一套完整技术栈
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-8 sm:mt-12">
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] p-6 sm:p-8 transition-transform duration-500 hover:-translate-y-1 flex flex-col">
+              <div class="text-white/40 text-[14px] font-[450] mb-6">01</div>
+              <h3 class="text-white text-[20px] sm:text-[24px] font-[450] leading-[1.15] mb-3">推理引擎</h3>
+              <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-6">对您的数据进行多步推理，思维链全程透明、可审计</p>
+              <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">了解更多</button>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] p-6 sm:p-8 transition-transform duration-500 hover:-translate-y-1 flex flex-col">
+              <div class="text-white/40 text-[14px] font-[450] mb-6">02</div>
+              <h3 class="text-white text-[20px] sm:text-[24px] font-[450] leading-[1.15] mb-3">预测模型</h3>
+              <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-6">为未知建模，交付带校准置信区间的预测</p>
+              <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">了解更多</button>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] p-6 sm:p-8 transition-transform duration-500 hover:-translate-y-1 flex flex-col">
+              <div class="text-white/40 text-[14px] font-[450] mb-6">03</div>
+              <h3 class="text-white text-[20px] sm:text-[24px] font-[450] leading-[1.15] mb-3">实时信号</h3>
+              <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-6">当您的假设被打破的瞬间，实时推送异常与漂移预警</p>
+              <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">了解更多</button>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] p-6 sm:p-8 transition-transform duration-500 hover:-translate-y-1 flex flex-col">
+              <div class="text-white/40 text-[14px] font-[450] mb-6">04</div>
+              <h3 class="text-white text-[20px] sm:text-[24px] font-[450] leading-[1.15] mb-3">安静界面</h3>
+              <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-6">尊重注意力的仪表盘——没有噪音，没有无尽信息流，只有信号</p>
+              <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">了解更多</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="pricing" class="relative w-full px-5 sm:px-8 md:px-[82px] py-10 sm:py-14">
+      <div class="page-fade w-full max-w-[1800px] mx-auto">
+        <div class="reveal">
+          <div class="text-white/50 text-[13px] sm:text-[14px] font-[450] tracking-[0.2em] uppercase mb-6 sm:mb-8">定价</div>
+          <h2 class="text-white text-[28px] sm:text-[44px] font-normal leading-[1.1] max-w-[820px]">
+            从第一个信号到整支舰队，随规模成长
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mt-8 sm:mt-12">
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/15 p-6 sm:p-8 flex flex-col transition-transform duration-500 hover:-translate-y-1">
+              <div class="text-white text-[18px] sm:text-[20px] font-[450]">起步版</div>
+              <div class="text-white/60 text-[13px] font-[450] mt-2 mb-6">为探索预见的小团队</div>
+              <div class="text-white text-[40px] sm:text-[52px] font-normal leading-[1] mb-6">免费</div>
+              <ul class="flex flex-col gap-3 mb-8">
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>1 个工作区
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>推理引擎（轻量版）
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>7 天信号历史
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>社区支持
+                </li>
+              </ul>
+              <button class="mt-auto h-[50px] rounded-[12px] border border-white/30 text-white text-[15px] font-[450] transition-opacity hover:bg-white/5">开始使用</button>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full relative rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/25 p-6 sm:p-8 flex flex-col transition-transform duration-500 hover:-translate-y-1">
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#E9E9E9] text-[#0A0707] text-[12px] font-[450] whitespace-nowrap">最受欢迎</div>
+              <div class="text-white text-[18px] sm:text-[20px] font-[450]">成长版</div>
+              <div class="text-white/60 text-[13px] font-[450] mt-2 mb-6">每月，按年付</div>
+              <div class="text-white text-[40px] sm:text-[52px] font-normal leading-[1] mb-6">¥6,900</div>
+              <ul class="flex flex-col gap-3 mb-8">
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>无限工作区
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>完整推理引擎
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>预测模型
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>实时信号与预警
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>优先支持
+                </li>
+              </ul>
+              <button class="mt-auto h-[50px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[15px] font-[450] transition-opacity hover:opacity-90">预约演示</button>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/15 p-6 sm:p-8 flex flex-col transition-transform duration-500 hover:-translate-y-1">
+              <div class="text-white text-[18px] sm:text-[20px] font-[450]">企业版</div>
+              <div class="text-white/60 text-[13px] font-[450] mt-2 mb-6">为在暗处航行的舰队</div>
+              <div class="text-white text-[40px] sm:text-[52px] font-normal leading-[1] mb-6">Custom</div>
+              <ul class="flex flex-col gap-3 mb-8">
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>包含成长版全部功能
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>专属模型
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>单点登录与审计日志
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>99.99% 可用性 SLA
+                </li>
+                <li class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.4] flex items-start gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mt-1 text-white/50 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>解决方案架构师
+                </li>
+              </ul>
+              <button class="mt-auto h-[50px] rounded-[12px] border border-white/30 text-white text-[15px] font-[450] transition-opacity hover:bg-white/5">开始使用</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="resources" class="relative w-full px-5 sm:px-8 md:px-[82px] py-10 sm:py-14">
+      <div class="page-fade w-full max-w-[1800px] mx-auto">
+        <div class="reveal">
+          <div class="text-white/50 text-[13px] sm:text-[14px] font-[450] tracking-[0.2em] uppercase mb-6 sm:mb-8">资源</div>
+          <h2 class="text-white text-[28px] sm:text-[44px] font-normal leading-[1.1] max-w-[820px]">
+            走得更远所需的一切。
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mt-8 sm:mt-12">
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] overflow-hidden transition-transform duration-500 hover:-translate-y-1">
+              <div class="h-[170px] sm:h-[190px]" style="background: linear-gradient(135deg,#1b2a4a,#3a1d2e)"></div>
+              <div class="p-6 sm:p-8 flex flex-col h-full">
+                <div class="text-white/50 text-[12px] font-[450] tracking-[0.12em] uppercase mb-3">指南</div>
+                <h3 class="text-white text-[20px] sm:text-[22px] font-[450] leading-[1.2] mb-3">新团队的预测操作手册</h3>
+                <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-5">逐步上手指南，一周内上线您的第一个预测模型</p>
+                <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">打开</button>
+              </div>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] overflow-hidden transition-transform duration-500 hover:-translate-y-1">
+              <div class="h-[170px] sm:h-[190px]" style="background: linear-gradient(135deg,#0f2e2a,#1b2a4a)"></div>
+              <div class="p-6 sm:p-8 flex flex-col h-full">
+                <div class="text-white/50 text-[12px] font-[450] tracking-[0.12em] uppercase mb-3">报告</div>
+                <h3 class="text-white text-[20px] sm:text-[22px] font-[450] leading-[1.2] mb-3">预见之年，2026</h3>
+                <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-5">来自 200+ 个在深度不确定性下决策的团队的基准</p>
+                <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">打开</button>
+              </div>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] overflow-hidden transition-transform duration-500 hover:-translate-y-1">
+              <div class="h-[170px] sm:h-[190px]" style="background: linear-gradient(135deg,#2e1b3a,#1b2a4a)"></div>
+              <div class="p-6 sm:p-8 flex flex-col h-full">
+                <div class="text-white/50 text-[12px] font-[450] tracking-[0.12em] uppercase mb-3">文档</div>
+                <h3 class="text-white text-[20px] sm:text-[22px] font-[450] leading-[1.2] mb-3">模型卡与 API 参考</h3>
+                <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-5">将 Kairos 集成进您自己技术栈所需的一切</p>
+                <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">打开</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="blog" class="relative w-full px-5 sm:px-8 md:px-[82px] py-10 sm:py-14">
+      <div class="page-fade w-full max-w-[1800px] mx-auto">
+        <div class="reveal">
+          <div class="text-white/50 text-[13px] sm:text-[14px] font-[450] tracking-[0.2em] uppercase mb-6 sm:mb-8">洞察</div>
+          <h2 class="text-white text-[28px] sm:text-[44px] font-normal leading-[1.1] max-w-[820px]">
+            来自团队的最新动态。
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mt-8 sm:mt-12">
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] overflow-hidden transition-transform duration-500 hover:-translate-y-1">
+              <div class="h-[170px] sm:h-[190px]" style="background: linear-gradient(135deg,#1b2a4a,#3a1d2e)"></div>
+              <div class="p-6 sm:p-8 flex flex-col h-full">
+                <div class="text-white/50 text-[12px] font-[450] tracking-[0.12em] uppercase mb-3">产品</div>
+                <h3 class="text-white text-[20px] sm:text-[22px] font-[450] leading-[1.2] mb-3">Kairos 2.0：会引用来源的推理</h3>
+                <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-5">我们的新思维链层会展示每个预测背后的精确信号</p>
+                <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">阅读</button>
+              </div>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] overflow-hidden transition-transform duration-500 hover:-translate-y-1">
+              <div class="h-[170px] sm:h-[190px]" style="background: linear-gradient(135deg,#0f2e2a,#1b2a4a)"></div>
+              <div class="p-6 sm:p-8 flex flex-col h-full">
+                <div class="text-white/50 text-[12px] font-[450] tracking-[0.12em] uppercase mb-3">研究</div>
+                <h3 class="text-white text-[20px] sm:text-[22px] font-[450] leading-[1.2] mb-3">为形势转变校准不确定性</h3>
+                <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-5">为什么我们在报告预测之前，先报告置信区间</p>
+                <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">阅读</button>
+              </div>
+            </div>
+          </div>
+          <div class="reveal h-full">
+            <div class="h-full rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] overflow-hidden transition-transform duration-500 hover:-translate-y-1">
+              <div class="h-[170px] sm:h-[190px]" style="background: linear-gradient(135deg,#2e1b3a,#1b2a4a)"></div>
+              <div class="p-6 sm:p-8 flex flex-col h-full">
+                <div class="text-white/50 text-[12px] font-[450] tracking-[0.12em] uppercase mb-3">公司</div>
+                <h3 class="text-white text-[20px] sm:text-[22px] font-[450] leading-[1.2] mb-3">为什么我们有意打造一个安静的界面</h3>
+                <p class="text-white/70 text-[14px] sm:text-[15px] font-[450] leading-[1.5] mb-5">去掉信息流是我们今年做出的最高杠杆决策</p>
+                <button class="mt-auto h-[46px] rounded-[12px] bg-[#E9E9E9] text-[#0A0707] text-[14px] font-[450] transition-opacity hover:opacity-90">阅读</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="about" class="relative w-full px-5 sm:px-8 md:px-[82px] pt-16 sm:pt-24 pb-10 sm:pb-14">
+      <div class="page-fade w-full max-w-[1800px] mx-auto">
+        <div class="reveal">
+          <div class="text-white/50 text-[13px] sm:text-[14px] font-[450] tracking-[0.2em] uppercase mb-6 sm:mb-8">我们的理念</div>
+          <h2 class="text-white text-[28px] sm:text-[44px] font-normal leading-[1.1] max-w-[820px]">
+            为<span class="text-white/50">尚无答案的问题</span>，构建推理系统
+          </h2>
+        </div>
+        <div id="metrics" class="mt-10 sm:mt-14">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            <div class="reveal rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] flex flex-col items-center justify-center text-center px-6 py-8 sm:py-10 transition-transform duration-500 hover:-translate-y-1">
+              <div class="text-white text-[32px] sm:text-[40px] font-normal leading-[1] mb-2">50+</div>
+              <div class="text-white/60 text-[13px] font-[450]">研究员与工程师</div>
+            </div>
+            <div class="reveal rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] flex flex-col items-center justify-center text-center px-6 py-8 sm:py-10 transition-transform duration-500 hover:-translate-y-1">
+              <div class="text-white text-[32px] sm:text-[40px] font-normal leading-[1] mb-2">12</div>
+              <div class="text-white/60 text-[13px] font-[450]">在研的开放问题</div>
+            </div>
+            <div class="reveal rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] flex flex-col items-center justify-center text-center px-6 py-8 sm:py-10 transition-transform duration-500 hover:-translate-y-1">
+              <div class="text-white text-[32px] sm:text-[40px] font-normal leading-[1] mb-2">99%</div>
+              <div class="text-white/60 text-[13px] font-[450]">预测校准</div>
+            </div>
+            <div class="reveal rounded-[24px] bg-[rgba(17,16,15,0.5)] backdrop-blur-[20px] border border-white/[0.06] flex flex-col items-center justify-center text-center px-6 py-8 sm:py-10 transition-transform duration-500 hover:-translate-y-1">
+              <div class="text-white text-[32px] sm:text-[40px] font-normal leading-[1] mb-2">24/7</div>
+              <div class="text-white/60 text-[13px] font-[450]">持续产出预见</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="contact" class="relative w-full px-5 sm:px-8 md:px-[82px] pt-20 sm:pt-28 pb-12 sm:pb-16 min-h-[calc(100vh-60px)]">
+      <div class="page-fade w-full max-w-[1800px] mx-auto">
+        <div class="reveal">
+          <div class="text-white/50 text-[13px] sm:text-[14px] font-[450] tracking-[0.2em] uppercase mb-6 sm:mb-8">联系</div>
+          <h2 class="text-white text-[28px] sm:text-[44px] font-normal leading-[1.1] max-w-[820px]">
+            准备好让您的数据抵达决定性时刻了吗？
+          </h2>
+        </div>
+        <div class="reveal mt-8 sm:mt-12">
+          <form onsubmit="handleContact(event)" class="flex flex-col sm:flex-row sm:items-end gap-4">
+            <div class="w-full sm:w-[340px]">
+              <label class="block text-white/80 text-[14px] font-[450] mb-3">邮箱</label>
+              <input type="email" class="w-full h-[52px] rounded-[14px] border border-white/25 bg-white/[0.06] backdrop-blur-[12px] text-white px-5 text-[15px] font-[450] placeholder:text-white/35 focus:outline-none focus:border-white/50 focus:ring-2 focus:ring-white/10 transition-all" placeholder="you@company.com" required>
+            </div>
+            <button type="submit" class="h-[52px] px-8 rounded-[14px] bg-[#E9E9E9] text-[#0A0707] text-[15px] font-[450] transition-all hover:bg-white inline-flex items-center gap-2">
+              获取演示
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+          <div id="contact-success" class="hidden">
+            <div class="text-white text-[20px] font-[450]">谢谢，我们会尽快联系您。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <footer class="w-full px-5 sm:px-8 md:px-[82px] py-16 sm:py-20">
+      <div class="page-fade w-full max-w-[1800px] mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
+          <div>
+            <div class="flex items-center gap-2.5 mb-6">
+              <svg width="28" height="28" viewBox="0 0 256 256" fill="none" class="sm:w-[32px] sm:h-[32px]">
+                <path d="M 256 256 L 178 256 C 150.386 256 128 233.614 128 206 L 128 256 L 0 256 L 0 192 C 0 156.654 28.654 128 64 128 C 99.346 128 128 156.654 128 192 L 128 128 L 256 128 Z M 78 0 C 105.614 0 128 22.386 128 50 L 128 0 L 256 0 L 256 64 C 256 99.346 227.346 128 192 128 C 156.654 128 128 99.346 128 64 L 128 128 L 0 128 L 0 0 Z" fill="white"/>
+              </svg>
+              <span class="text-white text-[22px] sm:text-[26px] font-[450] leading-none tracking-[-0.02em]">Kairos</span>
+            </div>
+            <div class="text-white/40 text-[13px] font-[450]">为未知问题而生的推理系统</div>
+          </div>
+          <div class="flex flex-col gap-3 md:pt-[72px]">
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white transition-colors" onclick="go('platform')">平台</span>
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white transition-colors" onclick="go('pricing')">定价</span>
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white transition-colors" onclick="go('resources')">资源</span>
+          </div>
+          <div class="flex flex-col gap-3 md:pt-[72px]">
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white transition-colors" onclick="go('blog')">洞察</span>
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white transition-colors" onclick="go('about')">关于</span>
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white transition-colors" onclick="go('contact')">联系</span>
+          </div>
+          <div class="flex flex-col gap-3 md:pt-[72px]">
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white hover:underline underline-offset-4 transition-all duration-300">Twitter</span>
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white hover:underline underline-offset-4 transition-all duration-300">Google</span>
+            <span class="text-white/60 text-[14px] font-[450] cursor-pointer hover:text-white hover:underline underline-offset-4 transition-all duration-300">GitHub</span>
+          </div>
+        </div>
+        <div class="h-px bg-white/10 my-8"></div>
+        <div class="text-white/40 text-[13px] font-[450]">© 2026 Kairos. 版权所有</div>
+      </div>
+    </footer>
+    
+    <script>
+      /* ===== 每页滚动淡出：向下滚动时当前页内容逐渐消失 ===== */
+      (function () {
+        const els = document.querySelectorAll('.page-fade');
+        const fade = () => {
+          const vh = window.innerHeight;
+          els.forEach((el) => {
+            const bottom = el.getBoundingClientRect().bottom;
+            const progress = Math.min(Math.max((vh * 0.7 - bottom) / (vh * 0.5), 0), 1);
+            el.style.opacity = String(1 - progress);
+          });
+        };
+        window.addEventListener('scroll', fade, { passive: true });
+        window.addEventListener('resize', fade);
+        fade();
+      })();
+
+      /* ===== 导航当前板块高亮（scrollspy） ===== */
+      (function () {
+        const links = document.querySelectorAll('.nav-link');
+        const map = {};
+        links.forEach((l) => { if (l.dataset.target) map[l.dataset.target] = l; });
+        const targets = Object.keys(map).map((id) => document.getElementById(id)).filter(Boolean);
+        if (!targets.length) return;
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              Object.values(map).forEach((l) => l.classList.remove('nav-active'));
+              const el = map[e.target.id];
+              if (el) el.classList.add('nav-active');
+            });
+          },
+          { rootMargin: '-40% 0px -55% 0px' }
+        );
+        targets.forEach((t) => io.observe(t));
+      })();
+
+      const BAR_HEIGHTS = [23,40,53,40,33,14,7,17,75,65,88,75,65,47,33,88,4,7,9,14,95,65,79,37,7,40,17,20,62,47,92,72];
+      const maxHeight = Math.max(...BAR_HEIGHTS);
+      
+      const barsContainer = document.getElementById('chart-bars');
+      const labelsContainer = document.getElementById('chart-labels');
+      
+      BAR_HEIGHTS.forEach((h, i) => {
+        const bar = document.createElement('div');
+        bar.className = 'flex-1 rounded-[0.5px] animate-bar-grow origin-bottom';
+        bar.style.height = `${(h / maxHeight) * 100}%`;
+        bar.style.backgroundColor = i >= 28 ? 'rgba(255,255,255,0.1)' : 'white';
+        bar.style.animationDelay = `${1100 + i * 30}ms`;
+        barsContainer.appendChild(bar);
+        
+        const gridline = document.createElement('div');
+        gridline.className = 'absolute top-0 bottom-0 w-px bg-white/10';
+        gridline.style.left = `${((i + 1) / 5) * 100}%`;
+        barsContainer.parentElement.appendChild(gridline);
+      });
+      
+      const labels = ['10:00','12:00','14:00','16:00','18:00'];
+      labels.forEach((label, i) => {
+        const span = document.createElement('span');
+        span.className = 'text-[9px] sm:text-[10px] font-[450] leading-[10px] text-white/80';
+        span.textContent = label;
+        span.style.opacity = i >= 3 ? '0.4' : '1';
+        labelsContainer.appendChild(span);
+      });
+      
+      let isOpen = false;
+      function toggleMenu() {
+        isOpen = !isOpen;
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+        const menu = document.getElementById('mobile-menu');
+        const panel = document.getElementById('menu-panel');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const links = menu.querySelectorAll('a');
+        const ctas = document.getElementById('menu-ctas');
+        
+        if (isOpen) {
+          menu.classList.remove('invisible');
+          menu.classList.add('visible');
+          panel.classList.remove('opacity-0', '-translate-y-4', 'scale-[0.97]');
+          panel.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+          menuIcon.classList.replace('opacity-100', 'opacity-0');
+          menuIcon.classList.replace('rotate-0', 'rotate-90');
+          menuIcon.classList.replace('scale-100', 'scale-75');
+          closeIcon.classList.replace('opacity-0', 'opacity-100');
+          closeIcon.classList.replace('-rotate-90', 'rotate-0');
+          closeIcon.classList.replace('scale-75', 'scale-100');
+          links.forEach((link, i) => {
+            link.style.transitionDelay = `${100 + i * 50}ms`;
+            link.classList.remove('opacity-0', '-translate-x-3');
+            link.classList.add('opacity-100', 'translate-x-0');
+          });
+          ctas.style.transitionDelay = '350ms';
+          ctas.classList.remove('opacity-0', 'translate-y-2');
+          ctas.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          menu.classList.remove('visible');
+          menu.classList.add('invisible');
+          panel.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
+          panel.classList.add('opacity-0', '-translate-y-4', 'scale-[0.97]');
+          menuIcon.classList.replace('opacity-0', 'opacity-100');
+          menuIcon.classList.replace('rotate-90', 'rotate-0');
+          menuIcon.classList.replace('scale-75', 'scale-100');
+          closeIcon.classList.replace('opacity-100', 'opacity-0');
+          closeIcon.classList.replace('rotate-0', '-rotate-90');
+          closeIcon.classList.replace('scale-100', 'scale-75');
+          links.forEach(link => {
+            link.style.transitionDelay = '0ms';
+            link.classList.remove('opacity-100', 'translate-x-0');
+            link.classList.add('opacity-0', '-translate-x-3');
+          });
+          ctas.style.transitionDelay = '0ms';
+          ctas.classList.remove('opacity-100', 'translate-y-0');
+          ctas.classList.add('opacity-0', 'translate-y-2');
+        }
+      }
+      
+      function go(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({behavior:'smooth'});
+        }
+      }
+      
+      function handleContact(e) {
+        e.preventDefault();
+        const form = e.target;
+        const success = document.getElementById('contact-success');
+        form.classList.add('hidden');
+        success.classList.remove('hidden');
+      }
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+  </body>
+</html>
