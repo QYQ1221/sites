@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sites · Velorah &amp; Apogee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background:#070912; color:#fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .card { transition: transform .4s cubic-bezier(0.16,1,0.3,1), box-shadow .4s; }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.45); }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-6">
+  <div class="max-w-4xl w-full text-center">
+    <div class="text-white/40 text-[13px] tracking-[0.3em] uppercase mb-4">WorkBuddy · Static Sites</div>
+    <h1 class="text-white text-[40px] sm:text-[56px] font-semibold leading-[1.05] mb-3">Two sites, one repo.</h1>
+    <p class="text-white/60 text-[15px] sm:text-[17px] max-w-xl mx-auto mb-12">Pick a project below. Both are self-contained static pages, deployed via GitHub Pages.</p>
+
+    <div class="grid sm:grid-cols-2 gap-6 text-left">
+      <a href="./velorah/" class="card block rounded-3xl bg-[rgba(255,255,255,0.04)] backdrop-blur-xl border border-white/10 p-8">
+        <div class="text-white/40 text-[12px] tracking-[0.2em] uppercase mb-3">Brand · Cinematic</div>
+        <h2 class="text-white text-[26px] font-semibold mb-2">Velorah®</h2>
+        <p class="text-white/60 text-[14px] leading-relaxed mb-6">A calm, cinematic landing page — fullscreen video, glassmorphic nav, manifesto, studio cards, journal and a reach-out form.</p>
+        <span class="text-white text-[14px] inline-flex items-center gap-2">Open site →</span>
+      </a>
+
+      <a href="./apogee/" class="card block rounded-3xl bg-[rgba(255,255,255,0.04)] backdrop-blur-xl border border-white/10 p-8">
+        <div class="text-white/40 text-[12px] tracking-[0.2em] uppercase mb-3">Product · Data</div>
+        <h2 class="text-white text-[26px] font-semibold mb-2">Apogee</h2>
+        <p class="text-white/60 text-[14px] leading-relaxed mb-6">A dark, data-driven hero with a live revenue card, plus Platform / Pricing / Resources / Blog sections and a contact form.</p>
+        <span class="text-white text-[14px] inline-flex items-center gap-2">Open site →</span>
+      </a>
+    </div>
+
+    <div class="text-white/30 text-[12px] mt-12">Hosted on GitHub Pages · no build step required</div>
+  </div>
+</body>
+</html>
